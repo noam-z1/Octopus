@@ -83,10 +83,9 @@ server.route({
             if (!(data.name && data.team)){
                 return res.response("Missing data").code(400);
             }
-            deleteUser(id);
-            const user = {id:id,name:data.name, team: data.team}
-            users.push(user);
-            return res.response(user).code(200);
+            users[index].name = data.name;
+            users[index].team = data.team;
+            return res.response(users[index]).code(200);
         }
 })
 
@@ -103,7 +102,7 @@ server.route({
             if (index == -1){
                 return res.response("No user with selected id").code(400);
             }
-            deleteUser(id);
+            users.splice(index, 1);
             return res.response("User "+ id +" deleted from the system").code(200);
         }
 })
@@ -122,9 +121,6 @@ function getUserByID(id){
     return users.findIndex(getIndex);
 }
 
-function deleteUser(id){
-    users.splice(id, 1);
-}
 
 init();
 
