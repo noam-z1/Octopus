@@ -18,7 +18,7 @@ server.route({
 
 server.route({
     method: 'GET',
-        path: '/users/{id}',
+        path: '/users/:id',
         handler: (req, res) => {
             const id = req.params.id;
             const index = getUserByID(id);
@@ -29,18 +29,19 @@ server.route({
         }
 })
 
-// server.route({
-//     method: 'GET',
-//         path: 'users/team/{team}',
-//         handler: (req, res) => {
-//             const team = req.params.team;
-//             const team_users = users.filter((user) => {return user.team == team});
-//             if (team_users.length == 0){
-//                 return res.response("No users found in the team").code(400);
-//             }
-//             return res.response(team_users).code(200);
-//         }
-// })
+server.route({
+    method: 'GET',
+        path: '/users/team/{team}',
+        handler: (req, res) => {
+            
+            const team = req.params.team;
+            const team_users = users.filter((user) => {return user.team == team});
+            if (team_users.length == 0){
+                return res.response("No users found in the team").code(400);
+            }
+            return res.response(team_users).code(200);
+        }
+})
 
 server.route({
     method: 'POST',
@@ -79,6 +80,21 @@ server.route({
             return res.response(user).code(200);
         }
 })
+
+server.route({
+    method: 'DELETE',
+        path: '/users/{id}',
+        handler: (req, res) => {
+            const id = req.params.id;
+            const index = getUserByID(id);
+            if (index == -1){
+                return res.response("No user with selected id").code(400);
+            }
+            deleteUser(id);
+            return res.response("User "+id+" deleted from the system").code(200);
+        }
+})
+
 
 const init = async () => {
 
