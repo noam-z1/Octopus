@@ -2,6 +2,7 @@ const Hapi = require('@hapi/hapi');
 const uuid = require('uuid');
 
 let users;
+const PASSWORD = "octopus";
 
 const server = Hapi.server({
     port: 3000,
@@ -47,6 +48,10 @@ server.route({
     method: 'POST',
         path: '/users',
         handler: (req, res) => {
+            const password = req.headers.password;
+            if (password === null || password != PASSWORD){
+                return res.response("Authentication error").code(401);
+            }
             const id = uuid.v1();
             const data = req.payload;
             if (!data){
@@ -65,6 +70,10 @@ server.route({
     method: 'PUT',
         path: '/users/{id}',
         handler: (req, res) => {
+            const password = req.headers.password;
+            if (password === null || password != PASSWORD){
+                return res.response("Authentication error").code(401);
+            }
             const id = req.params.id;
             const index = getUserByID(id);
             if (index == -1){
@@ -85,13 +94,17 @@ server.route({
     method: 'DELETE',
         path: '/users/{id}',
         handler: (req, res) => {
+            const password = req.headers.password;
+            if (password === null || password != PASSWORD){
+                return res.response("Authentication error").code(401);
+            }
             const id = req.params.id;
             const index = getUserByID(id);
             if (index == -1){
                 return res.response("No user with selected id").code(400);
             }
             deleteUser(id);
-            return res.response("User "+id+" deleted from the system").code(200);
+            return res.response("User "+ id +" deleted from the system").code(200);
         }
 })
 
