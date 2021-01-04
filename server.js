@@ -20,16 +20,27 @@ server.route({
     method: 'GET',
         path: '/users/{id}',
         handler: (req, res) => {
-            const id = req.params.id
-            console.log(id);
-            const getIndex = users => users.id === id;
-            const index = users.findIndex(getIndex);
+            const id = req.params.id;
+            const index = getUserByID(id);
             if (index == -1){
                 return res.response("Id not found").code(400);
             }
             return res.response(users[index]).code(200);
         }
 })
+
+// server.route({
+//     method: 'GET',
+//         path: 'users/team/{team}',
+//         handler: (req, res) => {
+//             const team = req.params.team;
+//             const team_users = users.filter((user) => {return user.team == team});
+//             if (team_users.length == 0){
+//                 return res.response("No users found in the team").code(400);
+//             }
+//             return res.response(team_users).code(200);
+//         }
+// })
 
 server.route({
     method: 'POST',
@@ -43,12 +54,31 @@ server.route({
             if (!(data.name && data.team)){
                 return res.response("Missing data").code(400);
             }
-            let user = {id:id,name:data.name, team: data.team}
+            const user = {id:id,name:data.name, team: data.team}
             users.push(user);
             return res.response(user).code(200);
         }
 })
 
+server.route({
+    method: 'PUT',
+        path: '/users/{id}',
+        handler: (req, res) => {
+            const id = req.params.id;
+            const index = getUserByID(id);
+            if (index == -1){
+                return res.response("No user with selected id").code(400);
+            }
+            const data = req.payload;
+            if (!(data.name && data.team)){
+                return res.response("Missing data").code(400);
+            }
+            deleteUser(id);
+            const user = {id:id,name:data.name, team: data.team}
+            users.push(user);
+            return res.response(user).code(200);
+        }
+})
 
 const init = async () => {
 
@@ -57,6 +87,15 @@ const init = async () => {
     await server.start();
     console.log('Server running!');
 };
+
+function getUserByID(id){
+    const getIndex = users => users.id === id;
+    return users.findIndex(getIndex);
+}
+
+function deleteUser(id){
+    users.splice(id, 1);
+}
 
 init();
 
