@@ -1,12 +1,14 @@
 const Hapi = require('@hapi/hapi');
 const uuid = require('uuid');
 
+const result = require('dotenv').config({path:__dirname+'/system.env'}).error;
+if (result) throw result;
+
 let users;
-const PASSWORD = "octopus";
 
 const server = Hapi.server({
-    port: 3000,
-    host: 'localhost'
+    port: process.env.PORT,
+    host: process.env.HOST
 });
 
 server.route({
@@ -49,7 +51,7 @@ server.route({
         path: '/users',
         handler: (req, res) => {
             const password = req.headers.password;
-            if (password === null || password != PASSWORD){
+            if (password === null || password != process.env.PASSWORD){
                 return res.response("Authentication error").code(401);
             }
             const id = uuid.v1();
@@ -71,13 +73,13 @@ server.route({
         path: '/users/{id}',
         handler: (req, res) => {
             const password = req.headers.password;
-            if (password === null || password != PASSWORD){
+            if (password === null || password != process.env.PASSWORD){
                 return res.response("Authentication error").code(401);
             }
             const id = req.params.id;
             const index = getUserByID(id);
             if (index == -1){
-                return res.response("No user with selected id").code(400);
+                return res.response("No user with selected id").code(404);
             }
             const data = req.payload;
             if (!(data.name && data.team)){
@@ -94,7 +96,7 @@ server.route({
         path: '/users/{id}',
         handler: (req, res) => {
             const password = req.headers.password;
-            if (password === null || password != PASSWORD){
+            if (password === null || password != process.env.PASSWORD){
                 return res.response("Authentication error").code(401);
             }
             const id = req.params.id;
@@ -103,7 +105,7 @@ server.route({
                 return res.response("No user with selected id").code(400);
             }
             users.splice(index, 1);
-            return res.response("User "+ id +" deleted from the system").code(200);
+            return res.response(`User ${id} deleted from the system`).code(200);
         }
 })
 
@@ -113,7 +115,7 @@ const init = async () => {
     users = [];
 
     await server.start();
-    console.log('Server running!');
+    console.log(`Server running!`);
 };
 
 function getUserByID(id){

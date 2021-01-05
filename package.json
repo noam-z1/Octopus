@@ -1,0 +1,24 @@
+{
+  "name": "octopus",
+  "version": "1.0.0",
+  "description": "A node.js project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noam-z1/Octopus.git"
+  },
+  "author": "Noam Zadok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noam-z1/Octopus/issues"
+  },
+  "homepage": "https://github.com/noam-z1/Octopus#readme",
+  "dependencies": {
+    "@hapi/hapi": "^20.0.3",
+    "dotenv": "^8.2.0",
+    "uuid": "^8.3.2"
+  }
+}
