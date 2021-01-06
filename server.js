@@ -15,7 +15,7 @@ server.route({
     method: 'GET',
         path: '/users',
         handler: (req, res) => {
-            return res.response(users).code(400);
+            return res.response(users).code(200);
         }
 })
 
@@ -26,7 +26,7 @@ server.route({
             const id = req.params.id;
             const index = getUserByID(id);
             if (index == -1){
-                return res.response("Id not found").code(400);
+                return res.response("Id not found").code(404);
             }
             return res.response(users[index]).code(200);
         }
@@ -40,7 +40,7 @@ server.route({
             const team = req.params.team;
             const team_users = users.filter((user) => {return user.team == team});
             if (team_users.length == 0){
-                return res.response("No users found in the team").code(400);
+                return res.response("No users found in the team").code(404);
             }
             return res.response(team_users).code(200);
         }
@@ -64,7 +64,7 @@ server.route({
             }
             const user = {id:id,name:data.name, team: data.team}
             users.push(user);
-            return res.response(user).code(200);
+            return res.response(user).code(201);
         }
 })
 
@@ -102,7 +102,7 @@ server.route({
             const id = req.params.id;
             const index = getUserByID(id);
             if (index == -1){
-                return res.response("No user with selected id").code(400);
+                return res.response("No user with selected id").code(404);
             }
             users.splice(index, 1);
             return res.response(`User ${id} deleted from the system`).code(200);
